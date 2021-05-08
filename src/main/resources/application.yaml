@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    generate-unique-name: false
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      javax:
+        persistence:
+          validation:
+            mode: none
