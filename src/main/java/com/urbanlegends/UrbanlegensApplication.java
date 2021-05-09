@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
-@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
+@SpringBootApplication
 public class UrbanlegensApplication {
 
 	public static void main(String[] args) {
@@ -19,7 +19,7 @@ public class UrbanlegensApplication {
 	CommandLineRunner createInitialUsers(UserService userService){
 		return ( args) -> {
 			User user = User.builder()
-					.username("User1")
+					.username("user1")
 					.displayName("user1")
 					.password("Password123")
 					.build();
