@@ -1,14 +1,9 @@
 package com.urbanlegends.user;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.urbanlegends.shared.Views;
 import lombok.*;
@@ -36,13 +31,11 @@ public class User implements UserDetails {
 	@Column(name = "user_name")
 	@UniqueUsername
 	@Size(min = 4, max = 30)
-	@JsonView(Views.Public.class)
 	private String username;
 
 	@NotNull(message = "{urbanlegend.constraints.displayName.NotNull.message}")
 	@Column(name = "display_name")
 	@Size(min = 4, max = 30)
-	@JsonView(Views.Public.class)
 	private String displayName;
 
 	@NotNull(message = "{urbanlegend.constraints.password.NotNull.message}")
@@ -52,7 +45,9 @@ public class User implements UserDetails {
 	private String password;
 
 	@Column(name="image")
-	@JsonView(Views.Public.class)
+	//JsonView Kulllanım örnek
+	//@JsonView(Views.Base.class)
+	@Lob
 	private String image;
 
 	@Override
