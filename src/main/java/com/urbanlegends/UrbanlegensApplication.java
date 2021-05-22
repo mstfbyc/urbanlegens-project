@@ -1,6 +1,8 @@
 package com.urbanlegends;
 
 import com.urbanlegends.configuration.AppConfiguration;
+import com.urbanlegends.hoax.Hoax;
+import com.urbanlegends.hoax.HoaxService;
 import com.urbanlegends.user.User;
 import com.urbanlegends.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class UrbanlegensApplication {
 	@Autowired
 	AppConfiguration appConfiguration;
 
+	@Autowired
+	HoaxService hoaxService;
+
 	public static void main(String[] args) {
 		SpringApplication.run(UrbanlegensApplication.class, args);
 	}
@@ -41,11 +46,17 @@ public class UrbanlegensApplication {
 		return ( args) -> {
 			for (int i = 1; i <= 30; i++) {
 				User user = User.builder()
-						.username("user"+i)
-						.displayName("display"+i)
+						.username("user" + i)
+						.displayName("display" + i)
 						.password("Password123")
 						.build();
 				userService.saveUser(user);
+				for (int j = 1; j <= 4; j++) {
+					Hoax hoax = new Hoax();
+					hoax.setContent("hoax - " + j);
+					hoax.setUser(user);
+					hoaxService.save(hoax);
+				}
 			}
 			};
 	}
