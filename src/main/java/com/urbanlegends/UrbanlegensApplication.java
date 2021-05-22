@@ -1,12 +1,15 @@
 package com.urbanlegends;
 
+import com.urbanlegends.configuration.AppConfiguration;
 import com.urbanlegends.user.User;
 import com.urbanlegends.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.AuthorizationScope;
@@ -18,17 +21,22 @@ import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.io.File;
 import java.util.ArrayList;
 
 @SpringBootApplication
 @EnableSwagger2
 public class UrbanlegensApplication {
 
+	@Autowired
+	AppConfiguration appConfiguration;
+
 	public static void main(String[] args) {
 		SpringApplication.run(UrbanlegensApplication.class, args);
 	}
 
 	@Bean
+	@Profile("dev")
 	CommandLineRunner createInitialUsers(UserService userService){
 		return ( args) -> {
 			for (int i = 1; i <= 30; i++) {
@@ -40,6 +48,17 @@ public class UrbanlegensApplication {
 				userService.saveUser(user);
 			}
 			};
+	}
+
+	@Bean
+	CommandLineRunner createStorageDirectories(){
+		return ( args) -> {
+			File folder = new File(appConfiguration.getUploadPath());
+			boolean folderExist = folder.exists() && folder.isDirectory();
+			if(!folderExist){
+				folder.mkdir();
+			}
+		};
 	}
 
 	@Bean

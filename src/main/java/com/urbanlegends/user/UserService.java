@@ -54,9 +54,11 @@ public class UserService {
 		User user = getUser(username);
 		user.setDisplayName(userUpdateVM.getDisplayName());
 		if(userUpdateVM.getImage() !=null){
+			String oldImage = user.getImage();
 			try {
 				String storedFileName = fileService.writeBase64EncodedStringToFile(userUpdateVM.getImage());
 				user.setImage(storedFileName);
+				fileService.deleteFile(oldImage);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
