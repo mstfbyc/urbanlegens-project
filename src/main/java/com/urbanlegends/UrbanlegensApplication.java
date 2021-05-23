@@ -3,6 +3,7 @@ package com.urbanlegends;
 import com.urbanlegends.configuration.AppConfiguration;
 import com.urbanlegends.hoax.Hoax;
 import com.urbanlegends.hoax.HoaxService;
+import com.urbanlegends.hoax.vm.HoaxSubmitVM;
 import com.urbanlegends.user.User;
 import com.urbanlegends.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +53,9 @@ public class UrbanlegensApplication {
 						.build();
 				userService.saveUser(user);
 				for (int j = 1; j <= 4; j++) {
-					Hoax hoax = new Hoax();
+					HoaxSubmitVM hoax = new HoaxSubmitVM();
 					hoax.setContent("hoax - " + j);
-					hoax.setUser(user);
-					hoaxService.save(hoax);
+					hoaxService.save(hoax,user);
 				}
 			}
 			};
@@ -64,12 +64,17 @@ public class UrbanlegensApplication {
 	@Bean
 	CommandLineRunner createStorageDirectories(){
 		return ( args) -> {
-			File folder = new File(appConfiguration.getUploadPath());
-			boolean folderExist = folder.exists() && folder.isDirectory();
-			if(!folderExist){
-				folder.mkdir();
-			}
+			createFolder(appConfiguration.getUploadPath());
+			createFolder(appConfiguration.getAttachmentStorage());
+			createFolder(appConfiguration.getProfileStorage());
 		};
+	}
+	private void createFolder(String path){
+		File folder = new File(path);
+		boolean folderExist = folder.exists() && folder.isDirectory();
+		if(!folderExist){
+			folder.mkdir();
+		}
 	}
 
 	@Bean

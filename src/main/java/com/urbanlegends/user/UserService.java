@@ -3,7 +3,6 @@ package com.urbanlegends.user;
 import com.urbanlegends.errors.NotFoundException;
 import com.urbanlegends.file.FileService;
 import com.urbanlegends.user.vm.UserUpdateVM;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
 
 @Service
 public class UserService {
@@ -58,11 +56,17 @@ public class UserService {
 			try {
 				String storedFileName = fileService.writeBase64EncodedStringToFile(userUpdateVM.getImage());
 				user.setImage(storedFileName);
-				fileService.deleteFile(oldImage);
+				fileService.deleteProfileImage(oldImage);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		return userRepository.save(user);
+	}
+
+	public void deleteUser(String username) {
+		User user = userRepository.findByUsername(username);
+		fileService.deleteAllStoredFilesForUser(user);
+		userRepository.delete(user);
 	}
 }

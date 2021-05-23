@@ -1,5 +1,9 @@
 package com.urbanlegends.hoax;
 
+import com.urbanlegends.file.FileAttachment;
+import com.urbanlegends.file.FileAttachmentRepository;
+import com.urbanlegends.file.FileService;
+import com.urbanlegends.hoax.vm.HoaxSubmitVM;
 import com.urbanlegends.hoax.vm.HoaxVM;
 import com.urbanlegends.user.User;
 import com.urbanlegends.user.UserService;
@@ -23,9 +27,24 @@ public class HoaxService {
     @Autowired
     HoaxRepository hoaxRepository;
 
-    public void save(Hoax hoax) {
+    @Autowired
+    FileService fileService;
+
+    @Autowired
+    FileAttachmentRepository fileAttachmentRepository;
+
+    public void save(HoaxSubmitVM hoaxSubmitVM,User user) {
+        Hoax hoax = new Hoax();
+        hoax.setContent(hoaxSubmitVM.getContent());
         hoax.setTimestamp(new Date());
+        hoax.setUser(user);
         hoaxRepository.save(hoax);
+        Optional<FileAttachment> optionalFileAttachment = fileAttachmentRepository.findById(hoaxSubmitVM.getAttachmentId());
+        if(optionalFileAttachment.isPresent()){
+            FileAttachment fileAttachment = optionalFileAttachment.get();
+            fileAttachment.setHoax(hoax);
+            fileAttachmentRepository.save(fileAttachment);
+        }
     }
 
     public Page<Hoax> getHoaxes(Pageable page) {
@@ -76,5 +95,12 @@ public class HoaxService {
     }
 
 
-
+    public void delete(Long id) {
+        Hoax hoax = hoaxRepository.getOne(id);
+        if(hoax.getFileAttachment() !=null){
+            String fileName = hoax.getFileAttachment().getName();
+            fileService.deleteAttachmentFile(fileName);
+        }
+        hoaxRepository.deleteById(id);
+    }
 }

@@ -1,5 +1,6 @@
 package com.urbanlegends.hoax;
 
+import com.urbanlegends.file.FileAttachment;
 import com.urbanlegends.user.User;
 import lombok.Data;
 
@@ -21,4 +22,7 @@ public class Hoax {
 
     @ManyToOne
     private User user;
+
+    @OneToOne(mappedBy = "hoax", cascade = CascadeType.REMOVE)
+    private FileAttachment fileAttachment;
 }

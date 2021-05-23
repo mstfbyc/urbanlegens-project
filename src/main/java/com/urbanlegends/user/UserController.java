@@ -60,4 +60,12 @@ public class UserController {
 		return ResponseEntity.ok(new UserVM(user));
 	}
 
+	@DeleteMapping("/users/{username}")
+	@ApiOperation(value = "Update User", notes = "Urban legends update user")
+	@PreAuthorize("#username == principal.username")
+	public ResponseEntity<GenericResponse> deleteUser(@PathVariable String username){
+		userservice.deleteUser(username);
+		return ResponseEntity.ok(new GenericResponse("User removed"));
+	}
+
 }

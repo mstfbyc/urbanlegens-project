@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.urbanlegends.hoax.Hoax;
 import com.urbanlegends.shared.Views;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +13,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -45,10 +47,10 @@ public class User implements UserDetails {
 	private String password;
 
 	@Column(name="image")
-	//JsonView Kulllanım örnek
-	//@JsonView(Views.Base.class)
-	@Lob
 	private String image;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private List<Hoax> hoaxes;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
